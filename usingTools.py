@@ -1,16 +1,17 @@
-import autogen
 from typing import Literal
+
+import autogen
 from typing_extensions import Annotated
 
-local_llm_config={
+local_llm_config = {
     "config_list": [
         {
-            "model": "NotRequired", # Loaded with LiteLLM command
-            "api_key": "NotRequired", # Not needed
-            "base_url": "http://0.0.0.0:4000"  # Your LiteLLM URL
+            "model": "NotRequired",  # Loaded with LiteLLM command
+            "api_key": "NotRequired",  # Not needed
+            "base_url": "http://0.0.0.0:4000",  # Your LiteLLM URL
         }
     ],
-    "cache_seed": None # Turns off caching, useful for testing different models
+    "cache_seed": None,  # Turns off caching, useful for testing different models
 }
 
 # Create the agent and include examples of the function calling JSON in the prompt
@@ -34,15 +35,15 @@ chatbot = autogen.AssistantAgent(
             "parameter_3_name": "DEF",
             "parameter_4_name": 123.00,
         }. """,
-
     llm_config=local_llm_config,
 )
 
 user_proxy = autogen.UserProxyAgent(
     name="user_proxy",
-    is_termination_msg=lambda x: x.get("content", "") and "TERMINATE" in x.get("content", ""),
+    is_termination_msg=lambda x: x.get("content", "")
+    and "TERMINATE" in x.get("content", ""),
     human_input_mode="NEVER",
-    max_consecutive_auto_reply=1,  
+    max_consecutive_auto_reply=1,
     code_execution_config={
         "last_n_messages": 1,
         "work_dir": "tmp",
@@ -53,8 +54,11 @@ user_proxy = autogen.UserProxyAgent(
 
 CurrencySymbol = Literal["USD", "EUR"]
 
+
 # Define our function that we expect to call
-def exchange_rate(base_currency: CurrencySymbol, quote_currency: CurrencySymbol) -> float:
+def exchange_rate(
+    base_currency: CurrencySymbol, quote_currency: CurrencySymbol
+) -> float:
     if base_currency == quote_currency:
         return 1.0
     elif base_currency == "USD" and quote_currency == "EUR":
@@ -63,6 +67,7 @@ def exchange_rate(base_currency: CurrencySymbol, quote_currency: CurrencySymbol)
         return 1.1
     else:
         raise ValueError(f"Unknown currencies {base_currency}, {quote_currency}")
+
 
 # Register the function with the agent
 @user_proxy.register_for_execution()
@@ -74,6 +79,7 @@ def currency_calculator(
 ) -> str:
     quote_amount = exchange_rate(base_currency, quote_currency) * base_amount
     return f"{format(quote_amount, '.2f')} {quote_currency}"
+
 
 # start the conversation
 res = user_proxy.initiate_chat(
