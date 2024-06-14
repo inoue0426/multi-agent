@@ -1,11 +1,13 @@
-import tempfile
 import argparse
+import tempfile
 
 from autogen import ConversableAgent
 from autogen.coding import LocalCommandLineCodeExecutor
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-m', "--message", type=str, help="Message to send to the code writer agent")
+parser.add_argument(
+    "-m", "--message", type=str, help="Message to send to the code writer agent"
+)
 args = parser.parse_args()
 
 # Create a temporary directory to store the code files.
@@ -47,7 +49,9 @@ executor = LocalCommandLineCodeExecutor(
 code_executor_agent = ConversableAgent(
     "code_executor_agent",
     llm_config=False,  # Turn off LLM for this agent.
-    code_execution_config={"executor": executor},  # Use the local command line code executor.
+    code_execution_config={
+        "executor": executor
+    },  # Use the local command line code executor.
     human_input_mode="ALWAYS",  # Always take human input for this agent for safety.
 )
 
