@@ -56,7 +56,13 @@ number_agent.description = "Return the numbers given."
 from autogen import GroupChat
 
 group_chat = GroupChat(
-    agents=[adder_agent, multiplier_agent, subtracter_agent, divider_agent, number_agent],
+    agents=[
+        adder_agent,
+        multiplier_agent,
+        subtracter_agent,
+        divider_agent,
+        number_agent,
+    ],
     messages=[],
     max_round=6,
 )
