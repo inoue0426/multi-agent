@@ -1,14 +1,17 @@
 import argparse
+
+from autogen import AssistantAgent, ConversableAgent, UserProxyAgent
 from openai import OpenAI
-from autogen import AssistantAgent, UserProxyAgent, ConversableAgent
+
 
 def parse_arguments():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--max_turns', type=int, default=5)
-    parser.add_argument('--model', type=str, default="llama3")
-    parser.add_argument('--temperature_cathy', type=float, default=0.9)
-    parser.add_argument('--temperature_joe', type=float, default=0.7)
+    parser.add_argument("--max_turns", type=int, default=5)
+    parser.add_argument("--model", type=str, default="llama3")
+    parser.add_argument("--temperature_cathy", type=float, default=0.9)
+    parser.add_argument("--temperature_joe", type=float, default=0.7)
     return parser.parse_args()
+
 
 def create_config(args):
     config = {
@@ -17,10 +20,11 @@ def create_config(args):
         "api_key": "ollama",
     }
     cathy_config = config.copy()
-    cathy_config['temperature'] = args.temperature_cathy
+    cathy_config["temperature"] = args.temperature_cathy
     joe_config = config.copy()
-    joe_config['temperature'] = args.temperature_joe
+    joe_config["temperature"] = args.temperature_joe
     return cathy_config, joe_config
+
 
 def create_conversable_agent(name, system_message, llm_config, human_input_mode):
     return ConversableAgent(
@@ -29,6 +33,7 @@ def create_conversable_agent(name, system_message, llm_config, human_input_mode)
         llm_config={"config_list": [llm_config]},
         human_input_mode=human_input_mode,
     )
+
 
 args = parse_arguments()
 cathy_config, joe_config = create_config(args)
