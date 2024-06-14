@@ -2,6 +2,7 @@
 # coding: utf-8
 
 import tempfile
+
 from autogen import ConversableAgent
 from autogen.coding import LocalCommandLineCodeExecutor
 
@@ -28,7 +29,9 @@ print('Scatter plot saved to scatter.png')
 This is the end of the message.
 """
 
-reply = code_executor_agent.generate_reply(messages=[{"role": "user", "content": message_with_code_block}])
+reply = code_executor_agent.generate_reply(
+    messages=[{"role": "user", "content": message_with_code_block}]
+)
 print(reply)
 
 import os
