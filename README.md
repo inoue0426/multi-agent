@@ -16,4 +16,5 @@ Also require Ollama. With these, you can use any models you want to use if it is
 - This code can do as follows:
   - code execution
   - conversation
+  - using tools
 
