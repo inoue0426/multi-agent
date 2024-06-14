@@ -1,6 +1,6 @@
 from typing import Literal
 
-import autogen
+from autogen import AssistantAgent, UserProxyAgent
 from typing_extensions import Annotated
 
 local_llm_config = {
@@ -14,9 +14,7 @@ local_llm_config = {
     "cache_seed": None,  # Turns off caching, useful for testing different models
 }
 
-# Create the agent and include examples of the function calling JSON in the prompt
-# to help guide the model
-chatbot = autogen.AssistantAgent(
+chatbot = AssistantAgent(
     name="chatbot",
     system_message="""For currency exchange tasks,
         only use the functions you have been provided with.
@@ -38,7 +36,7 @@ chatbot = autogen.AssistantAgent(
     llm_config=local_llm_config,
 )
 
-user_proxy = autogen.UserProxyAgent(
+user_proxy = UserProxyAgent(
     name="user_proxy",
     is_termination_msg=lambda x: x.get("content", "")
     and "TERMINATE" in x.get("content", ""),
@@ -55,7 +53,6 @@ user_proxy = autogen.UserProxyAgent(
 CurrencySymbol = Literal["USD", "EUR"]
 
 
-# Define our function that we expect to call
 def exchange_rate(
     base_currency: CurrencySymbol, quote_currency: CurrencySymbol
 ) -> float:
@@ -69,7 +66,6 @@ def exchange_rate(
         raise ValueError(f"Unknown currencies {base_currency}, {quote_currency}")
 
 
-# Register the function with the agent
 @user_proxy.register_for_execution()
 @chatbot.register_for_llm(description="Currency exchange calculator.")
 def currency_calculator(
@@ -81,7 +77,6 @@ def currency_calculator(
     return f"{format(quote_amount, '.2f')} {quote_currency}"
 
 
-# start the conversation
 res = user_proxy.initiate_chat(
     chatbot,
     message="How much is 123.45 EUR in USD?",
