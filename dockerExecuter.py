@@ -1,8 +1,8 @@
 import tempfile
-from autogen import ConversableAgent
-from autogen.coding import LocalCommandLineCodeExecutor
-from autogen.coding import DockerCommandLineCodeExecutor
+
 from autogen import AssistantAgent, ConversableAgent, UserProxyAgent
+from autogen.coding import (DockerCommandLineCodeExecutor,
+                            LocalCommandLineCodeExecutor)
 from openai import OpenAI
 
 # Create a temporary directory to store the code files.
@@ -19,7 +19,9 @@ executor = DockerCommandLineCodeExecutor(
 code_executor_agent_using_docker = ConversableAgent(
     "code_executor_agent_docker",
     llm_config=False,  # Turn off LLM for this agent.
-    code_execution_config={"executor": executor},  # Use the docker command line code executor.
+    code_execution_config={
+        "executor": executor
+    },  # Use the docker command line code executor.
     human_input_mode="ALWAYS",  # Always take human input for this agent for safety.
 )
 
@@ -41,11 +43,15 @@ Reply 'TERMINATE' in the end when everything is done.
 code_writer_agent = ConversableAgent(
     "code_writer_agent",
     system_message=code_writer_system_message,
-    llm_config={"config_list": [{
-        "model": 'llama3',
-        "base_url": "http://localhost:11434/v1",
-        "api_key": "ollama",
-    }]},
+    llm_config={
+        "config_list": [
+            {
+                "model": "llama3",
+                "base_url": "http://localhost:11434/v1",
+                "api_key": "ollama",
+            }
+        ]
+    },
     code_execution_config=False,  # Turn off code execution for this agent.
 )
 
