@@ -64,7 +64,13 @@ allowed_transitions = {
 }
 
 constrained_graph_chat = GroupChat(
-    agents=[adder_agent, multiplier_agent, subtracter_agent, divider_agent, number_agent],
+    agents=[
+        adder_agent,
+        multiplier_agent,
+        subtracter_agent,
+        divider_agent,
+        number_agent,
+    ],
     allowed_or_disallowed_speaker_transitions=allowed_transitions,
     speaker_transitions_type="allowed",
     messages=[],
